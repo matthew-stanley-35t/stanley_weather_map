@@ -10,11 +10,14 @@
     <link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet'/>
 
 </head>
-<body>
+<body class="bg-secondary">
 
 <h1 class="fs-1 text-uppercase text-center">Open Weather Map</h1>
 <div class="container-fluid">
     <div id="cards" class="row d-flex justify-content-evenly mt-2"></div>
+    <p id="weatherLocation" class="m-3 w-50 d-flex justify-content-center ms-auto me-auto text-center fs-2">
+        Click to see the 5-day forecast of a location!
+    </p>
     <div id="map" class="row m-3"></div>
 </div>
 

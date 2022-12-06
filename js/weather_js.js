@@ -5,18 +5,27 @@ mapboxgl.accessToken = mapBoxKey;
 let map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v9',
-    zoom: 10,
-    center: [-104.9903, 39.7392]
+    zoom: 8,
+    center: [-104.9903, 39.7392],
 });
 
-let marker = new mapboxgl.Marker();
+let marker = new mapboxgl.Marker()
+//let clickLocation = $('#weatherLocation');
 
-function add_marker(event){
+function add_marker(event) {
     let coords = event.lngLat;
-    console.log('Lng:', coords.lng, 'Lat:', coords.lat);
-    marker.setLngLat(coords).addTo(map);
+    marker = new mapboxgl.Marker({
+        draggable: true
+    })
+        .setLngLat(coords)
+        .addTo(map);
     getWeather(coords.lat, coords.lng);
+    reverseGeocode({lat: coords.lat, lng: coords.lng}, mapBoxKey).then(function (results) {
+        console.log(results);
+        locationOfClick.html(results);
+    })
 }
+
 map.on('click', add_marker);
 
 let cardContainer = $('#cards')
@@ -29,8 +38,6 @@ function getWeather(lat,long){
         let html = '';
 
         for(let i = 0; i < reports.length; i += 8) {
-            console.log(reports[i]);
-
             let cardHeader = reports[i].dt_txt.split(' ');
             let highT = reports[i].main.temp_max;
             let lowT = reports[i].main.temp_min;
@@ -41,13 +48,13 @@ function getWeather(lat,long){
             let pressure = reports[i].main.pressure;
 
             html +=
-                '<div class="card text-center" style="width: 15rem;">' +
+                '<div class="card text-center" style="width: 15rem; background: lightblue">' +
                 '<div class="card-header">' + cardHeader[0] + '</div>' +
                 '<ul class="list-group list-group-flush">' +
-                '<li class="list-group-item"><span>' + highT + '*F / ' + lowT + '*F</span><br><img src="https://openweathermap.org/img/w/' + icon + '.png" alt="Weather Icon"></li>'+
-                '<li class="list-group-item"><span>Description: ' + weatherDesc + '</span><br><span>Humidity: ' + humidity + '%</span></li>'+
-                '<li class="list-group-item">Wind Speed: ' + windSpeed + 'mph</li>'+
-                '<li class="list-group-item">Pressure: ' + pressure + 'psi</li>'+
+                '<li class="list-group-item"><span>' + parseInt(highT) + '*F / ' + parseInt(lowT) + '*F</span><br><img src="https://openweathermap.org/img/w/' + icon + '.png" alt="Weather Icon"></li>'+
+                '<li class="list-group-item"><span>Condtions: ' + weatherDesc + '</span><br><span>Humidity: ' + humidity + '%</span></li>'+
+                '<li class="list-group-item">Wind Speed: ' + parseInt(windSpeed) + ' MPH</li>'+
+                '<li class="list-group-item">Pressure: ' + pressure + ' psi</li>'+
                 '</ul>'+
                 '</div>'
         }
